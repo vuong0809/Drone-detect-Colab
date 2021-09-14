@@ -79,13 +79,26 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     # Run inference
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
+
+
+    
     
     @io.on('stream cam')
     def on_message(imgBase64):
+        results = {
+            "img":"null",
+            "results":[],
+            "time":0
+          }
+
+        results['img'] = 'imgBase64'
+
         imgText = imgBase64.encode('utf-8')
         imgText = base64.b64decode(imgText)
         image = np.asarray(bytearray(imgText), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+
 
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -111,27 +124,15 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-            data = f'{xyxy[0]},{xyxy[1]},{xyxy[2]},{xyxy[3]},{label}'
-            print(data)
+            
+            results['results'].append({"label":label})
         
 
         print(f'Done. ({t2 - t1:.3f}s)')
 
-        x = {
-            "name": "John",
-            "age": 30,
-            "married": True,
-            "divorced": False,
-            "children": ("Ann","Billy"),
-            "pets": None,
-            "cars": [
-                {"model": "BMW 230", "mpg": 27.5},
-                {"model": "Ford Edge", "mpg": 24.1}
-                ]
-            }
-
         # print(len(det))
-        io.emit('log',str(x))
+        results['time'] = t2 - t1
+        io.emit('log',str(results))
 
 
     @io.event()
