@@ -1,4 +1,5 @@
 import socketio
+import json
 import base64
 import argparse
 import sys
@@ -110,12 +111,27 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-            print(f'{xyxy},{label}')
+            data = f'{xyxy[0]},{xyxy[1]},{xyxy[2]},{xyxy[3]},{label}'
+            print(data)
         
 
         print(f'Done. ({t2 - t1:.3f}s)')
 
-        io.emit('results','')
+        x = {
+            "name": "John",
+            "age": 30,
+            "married": True,
+            "divorced": False,
+            "children": ("Ann","Billy"),
+            "pets": None,
+            "cars": [
+                {"model": "BMW 230", "mpg": 27.5},
+                {"model": "Ford Edge", "mpg": 24.1}
+                ]
+            }
+
+        # print(len(det))
+        io.emit('log',str(x))
 
 
     @io.event()
