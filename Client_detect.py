@@ -86,6 +86,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     @io.on('stream cam')
     def on_message(imgBase64):
         results = {
+            "socket":"null",
             "img":"null",
             "results":[],
             "time":0
