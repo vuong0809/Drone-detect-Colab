@@ -215,9 +215,9 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             # Stream results
             im0 = annotator.result()
             img_encode = cv2.imencode('.jpeg', im0)[1]
-            jpeg_as_text = base64.b64encode(img_encode)
-            jpeg_as_text=jpeg_as_text.decode('utf-8')
-            io.emit('stream',jpeg_as_text)
+            imgBase64 = base64.b64encode(img_encode)
+            imgBase64 = imgBase64.decode('utf-8')
+            io.emit('stream',imgBase64)
 
 
 def parse_opt():

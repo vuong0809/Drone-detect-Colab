@@ -23,7 +23,7 @@ from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, load_classifier, time_sync
 
 io = socketio.Client()
-io.connect('https://14.175.240.27')
+# io.connect('https://14.175.240.27')
 
 @torch.no_grad()
 def run(weights='yolov5s.pt',  # model.pt path(s)
@@ -80,31 +80,29 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
 
+    vid = cv2.VideoCapture('http://192.168.1.4:4747/video')
 
-    
-    
-    @io.on('stream cam')
-    def on_message(imgBase64):
+    while(True):
+
         results = {
             "socket":"null",
             "img":"null",
             "results":[],
             "time":0
-          }
+            }
+        # Read frame image
+        image = vid.read()[1]
+        # Encode base64 image
+        img_encode = cv2.imencode('.png', image)[1]
+        imgBase64 = base64.b64encode(img_encode)
+        imgBase64 = imgBase64.decode('utf-8')
 
         results['img'] = 'imgBase64'
-
-        imgText = imgBase64.encode('utf-8')
-        imgText = base64.b64decode(imgText)
-        image = np.asarray(bytearray(imgText), dtype="uint8")
-        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-
-
-
+        
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
-
+        
         if onnx:
             img = img.astype('float32')
         else:
@@ -114,8 +112,8 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         if len(img.shape) == 3:
             img = img[None]  # expand for batch dim
         
+        # run detect
         t1 = time_sync()
-        
         pred = model(img, augment=augment, visualize=visualize)[0]
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         t2 = time_sync()
@@ -125,27 +123,27 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-            
+                
             results['results'].append({"label":label})
-        
-
+            
+        print(str(results))
         print(f'Done. ({t2 - t1:.3f}s)')
 
         # print(len(det))
-        results['time'] = t2 - t1
-        io.emit('log',str(results))
+        # results['time'] = t2 - t1
+        # io.emit('log',str(results))
 
 
-    @io.event()
-    def connect_error(data):
-        print("The connection failed!")
-        sys.exit()
+        # @io.event()
+        # def connect_error(data):
+        #     print("The connection failed!")
+        #     sys.exit()
     
 
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='data/images', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--source', type=str, default='0', help='0 for webcam')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
