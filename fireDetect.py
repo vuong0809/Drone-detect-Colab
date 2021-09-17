@@ -81,24 +81,24 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
 
     # define a video capture object
-    vid = cv2.VideoCapture('1')
+    vid = cv2.VideoCapture(0)
 
     while(True):
 
         results = {
-            "socket":"null",
+            "socketID":"null",
             "img":"null",
             "results":[],
             "time":0
-            }
+          }
         # Read frame image
         image = vid.read()[1]
         # Encode base64 image
-        img_encode = cv2.imencode('.png', image)[1]
+        img_encode = cv2.imencode('.jpeg', image)[1]
         imgBase64 = base64.b64encode(img_encode)
         imgBase64 = imgBase64.decode('utf-8')
 
-        results['img'] = 'imgBase64'
+        results["img"] = "imgBase64"
         
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -124,16 +124,21 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+
+            print(torch.tensor(xyxy)[0])
+            # print(torch.tensor(xyxy))
                 
-            results['results'].append({"label":label})
+            results["results"].append({"x0":"xyxy[0]","y0":0,"x1":0,"y1":0,"label":label})
             
         
         # print(f'Done. ({t2 - t1:.3f}s)')
 
         # print(len(det))
-        results['time'] = t2 - t1
-        print(str(results))
-        # io.emit('log',str(results))
+        results["time"] = t2 - t1
+        
+        # print(json.dumps(results))
+        # print(str(results))
+        io.emit('log',str(results))
 
 
         # @io.event()
