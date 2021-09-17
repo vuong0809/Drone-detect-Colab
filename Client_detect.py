@@ -22,10 +22,6 @@ from utils.general import check_img_size, check_imshow, check_requirements, chec
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, load_classifier, time_sync
 
-url = 'http://localhost'
-io = socketio.Client()
-io.connect(url)
-
 @torch.no_grad()
 def run(weights='yolov5s.pt',  # model.pt path(s)
         source='data/images',  # file/dir/URL/glob, 0 for webcam
@@ -83,6 +79,9 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
 
 
     
+    url = 'http://14.175.240.27'
+    io = socketio.Client()
+    io.connect(url)
     
     @io.on('stream cam')
     def on_message(imgBase64):
