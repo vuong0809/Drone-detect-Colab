@@ -130,7 +130,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
             
-            results["results"].append({"box":"null","label":label})
+            results["results"].append({"x0":0,"y0":0,"x1":0,"y1":0,"label":label})
         
         results["time"] = t2 - t1
         print(json.dumps(results))
