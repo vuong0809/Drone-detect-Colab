@@ -80,7 +80,8 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
 
-    vid = cv2.VideoCapture('http://192.168.1.4:4747/video')
+    # define a video capture object
+    vid = cv2.VideoCapture('1')
 
     while(True):
 
@@ -126,11 +127,12 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
                 
             results['results'].append({"label":label})
             
-        print(str(results))
-        print(f'Done. ({t2 - t1:.3f}s)')
+        
+        # print(f'Done. ({t2 - t1:.3f}s)')
 
         # print(len(det))
-        # results['time'] = t2 - t1
+        results['time'] = t2 - t1
+        print(str(results))
         # io.emit('log',str(results))
 
 
