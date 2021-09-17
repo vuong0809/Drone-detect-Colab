@@ -82,20 +82,25 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     url = 'http://14.175.240.27'
     io = socketio.Client()
     io.connect(url)
-    
-    @io.on('stream cam')
-    def on_message(imgBase64):
+
+    @io.on('StreamColab')
+    def on_message(msg):
         # print('.')
         results = {
-            "socket":"null",
+            "socketID":"null",
             "img":"null",
             "results":[],
             "time":0
           }
 
-        results['img'] = 'imgBase64'
+        # msg0 = json.loads(msg)
 
-        imgText = imgBase64.encode('utf-8')
+        # results['img'] = msg['img']
+        results["socketID"] = msg['socketID']
+
+        # print(msg)
+
+        imgText = msg['img'].encode('utf-8')
         imgText = base64.b64decode(imgText)
         image = np.asarray(bytearray(imgText), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
@@ -125,11 +130,11 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
             
-            results['results'].append({"label":label})
+            results["results"].append({"box":"null","label":label})
         
-        results['time'] = t2 - t1
-        print(str(results))
-        io.emit('log',str(results))
+        results["time"] = t2 - t1
+        print(json.dumps(results))
+        io.emit('ResultsColab',json.dumps(results))
 
 
     @io.event()
