@@ -22,7 +22,7 @@ from utils.general import check_img_size, check_imshow, check_requirements, chec
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, load_classifier, time_sync
 
-url = 'https://nguyentuanvuong.tk:8443'
+url = 'http://localhost'
 io = socketio.Client()
 io.connect(url)
 
@@ -86,6 +86,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     
     @io.on('stream cam')
     def on_message(imgBase64):
+        # print('.')
         results = {
             "socket":"null",
             "img":"null",
@@ -99,8 +100,6 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         imgText = base64.b64decode(imgText)
         image = np.asarray(bytearray(imgText), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-
-
 
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -129,11 +128,8 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             
             results['results'].append({"label":label})
         
-
-        # print(f'Done. ({t2 - t1:.3f}s)')
-
-        # print(len(det))
         results['time'] = t2 - t1
+        print(str(results))
         io.emit('log',str(results))
 
 
