@@ -128,7 +128,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             print(torch.tensor(xyxy)[0])
             # print(torch.tensor(xyxy))
                 
-            results["results"].append({"x0":"xyxy[0]","y0":0,"x1":0,"y1":0,"label":label})
+            results["results"].append({"x0":torch.tensor(xyxy),"y0":0,"x1":0,"y1":0,"label":label})
             
         
         # print(f'Done. ({t2 - t1:.3f}s)')
@@ -136,7 +136,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         # print(len(det))
         results["time"] = t2 - t1
         
-        # print(json.dumps(results))
+        print(json.dumps(results))
         # print(str(results))
         # io.emit('log',str(results))
 
