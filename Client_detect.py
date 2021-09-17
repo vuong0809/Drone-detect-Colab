@@ -130,7 +130,16 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             c = int(cls)  # integer class
             label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
             
-            results["results"].append({"x0":0,"y0":0,"x1":0,"y1":0,"label":label})
+
+            # xyxy0 = torch.tensor(xyxy).numpy()
+            # print()
+
+            x0 = float(torch.tensor(xyxy)[0].numpy())
+            y0 = float(torch.tensor(xyxy)[1].numpy())
+            x1 = float(torch.tensor(xyxy)[2].numpy())
+            y1 = float(torch.tensor(xyxy)[3].numpy())
+
+            results["results"].append({"x0":x0,"y0":y0,"x1":x1,"y1":y1,"label":label})
         
         results["time"] = t2 - t1
         print(json.dumps(results))
