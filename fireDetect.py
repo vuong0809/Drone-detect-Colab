@@ -94,7 +94,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         # Read frame image
         image = vid.read()[1]
         # Encode base64 image
-        img_encode = cv2.imencode('.jpeg', image)[1]
+        img_encode = cv2.imencode('.png', image)[1]
         imgBase64 = base64.b64encode(img_encode)
         imgBase64 = imgBase64.decode('utf-8')
 
@@ -138,7 +138,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         
         # print(json.dumps(results))
         # print(str(results))
-        io.emit('log',str(results))
+        # io.emit('log',str(results))
 
 
         # @io.event()
