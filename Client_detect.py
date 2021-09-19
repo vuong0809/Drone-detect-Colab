@@ -139,9 +139,10 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             x1 = float(torch.tensor(xyxy)[2].numpy())
             y1 = float(torch.tensor(xyxy)[3].numpy())
 
-            results["results"].append({"x0":x0,"y0":y0,"x1":x1,"y1":y1,"label":label})
+            results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.2f}'})
+            # results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.2f}',"label":label})
         
-        results["time"] = t2 - t1
+        results["time"] = f'{t2 - t1:.3f}'
         print(json.dumps(results))
         io.emit('ResultsColab',json.dumps(results))
 
