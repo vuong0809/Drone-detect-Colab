@@ -79,7 +79,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
 
 
     
-    url = 'http://14.175.240.27'
+    url = 'http://nguyentuanvuong.tk'
     io = socketio.Client()
     io.connect(url)
 
