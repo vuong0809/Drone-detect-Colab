@@ -22,7 +22,8 @@ from utils.general import check_img_size, check_imshow, check_requirements, chec
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, load_classifier, time_sync
 
-io = socketio.Client()
+
+# io = socketio.Client()
 # io.connect('https://14.175.240.27')
 
 @torch.no_grad()
@@ -52,7 +53,6 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         half=False,  # use FP16 half-precision inference
         ):
 
-
     # Initialize
     set_logging()
     device = select_device(device)
@@ -81,7 +81,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
 
     # define a video capture object
-    vid = cv2.VideoCapture(0)
+    vid = cv2.VideoCapture(1)
 
     while(True):
 
@@ -130,17 +130,12 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             x1 = float(torch.tensor(xyxy)[2].numpy())
             y1 = float(torch.tensor(xyxy)[3].numpy())
 
-            results["results"].append({"x0":x0,"y0":y0,"x1":x1,"y1":y1,"label":label})
-            
-        
-        # print(f'Done. ({t2 - t1:.3f}s)')
+            results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.2f}'})
 
-        # print(len(det))
-        results["time"] = t2 - t1
+        results["time"] = f'{t2 - t1:.3f}'
         
-        # print(json.dumps(results))
-        # print(str(results))
-        # io.emit('log',str(results))
+        print(json.dumps(results))
+        # io.emit('log',json.dumps(results))
 
 
         # @io.event()
@@ -152,7 +147,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='0', help='0 for webcam')
+    parser.add_argument('--source', type=str, default='1', help='0 for webcam')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')

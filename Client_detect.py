@@ -1,7 +1,6 @@
 import socketio
 import json
 import base64
-import argparse
 import sys
 from pathlib import Path
 
@@ -35,7 +34,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
 
     io = socketio.Client()
-    io.connect('http://nguyentuanvuong.tk')
+    io.connect('http://localhost:8000')
 
     @io.on('StreamColab')
     def on_message(msg):
