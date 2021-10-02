@@ -45,7 +45,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             "time":0
           }
 
-        results['img'] = msg['img']
+        # results['img'] = msg['img']
         results["socketID"] = msg['socketID']
 
         imgText = msg['img'].encode('utf-8')
