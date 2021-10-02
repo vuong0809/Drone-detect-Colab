@@ -16,6 +16,7 @@ from utils.augmentations import letterbox
 from models.experimental import attempt_load
 from utils.general import  non_max_suppression,  set_logging
 from utils.torch_utils import select_device, time_sync
+from utils.plots import Annotator, colors
 
 @torch.no_grad()
 def run(weights='yolov5s.pt',  # model.pt path(s)
@@ -81,7 +82,9 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             y1 = float(torch.tensor(xyxy)[3].numpy())
 
             results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
-        
+            
+
+        # results['img'] = annotator.result()
         results["time"] = f'{t2 - t1:.3f}'
         print(json.dumps(results))
         io.emit('ResultsColab',json.dumps(results))
