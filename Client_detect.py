@@ -76,15 +76,20 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             c = int(cls)  # integer class
             label = f'{names[c]} {conf:.3f}'
 
-            x0 = float(torch.tensor(xyxy)[0].numpy())
-            y0 = float(torch.tensor(xyxy)[1].numpy())
-            x1 = float(torch.tensor(xyxy)[2].numpy())
-            y1 = float(torch.tensor(xyxy)[3].numpy())
+            # x0 = float(torch.tensor(xyxy)[0].numpy())
+            # y0 = float(torch.tensor(xyxy)[1].numpy())
+            # x1 = float(torch.tensor(xyxy)[2].numpy())
+            # y1 = float(torch.tensor(xyxy)[3].numpy())
+            
+            x0 = int(xyxy[0])
+            y0 = int(xyxy[1])
+            x1 = int(xyxy[2])
+            y1 = int(xyxy[3])
 
-            results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
+            # results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
+            results["results"].append({"x0":f'{x0}',"y0":f'{y0}',"x1":f'{x1}',"y1":f'{y1}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
             
 
-        # results['img'] = annotator.result()
         results["time"] = f'{t2 - t1:.3f}'
         print(json.dumps(results))
         io.emit('ResultsColab',json.dumps(results))
