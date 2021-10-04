@@ -72,6 +72,12 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
 
         det = pred[0]
 
+        s = ''
+
+        for c in det[:, -1].unique():
+            n = (det[:, -1] == c).sum()  # detections per class
+            s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = f'{names[c]} {conf:.3f}'
@@ -89,7 +95,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             # results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
             results["results"].append({"x0":f'{x0}',"y0":f'{y0}',"x1":f'{x1}',"y1":f'{y1}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
             
-
+        results["output"] = f'{s}'
         results["time"] = f'{t2 - t1:.3f}'
         print(json.dumps(results))
         io.emit('ResultsColab',json.dumps(results))
