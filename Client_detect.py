@@ -35,7 +35,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
 
     io = socketio.Client()
-    io.connect('http://localhost:8000')
+    io.connect('http://nguyentuanvuong.tk:8000')
 
     @io.on('StreamColab')
     def on_message(msg):
