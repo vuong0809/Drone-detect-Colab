@@ -98,13 +98,16 @@ def run(
         results["output"] = f'{s}'
         results["time"] = f'{t2 - t1:.3f}'
         print(results["socketID"],results["output"], results["time"])
-        io.emit('ResultsColab',json.dumps(results))
+        try:
+            io.emit('ResultsColab',json.dumps(results))
+        except Exception as e:
+            print("The io emit failed!")
 
 
     @io.event()
     def connect_error(data):
         print("The connection failed!")
-        sys.exit()
+        # sys.exit()
 
 if __name__ == "__main__":
     run()
