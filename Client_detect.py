@@ -97,7 +97,7 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             
         results["output"] = f'{s}'
         results["time"] = f'{t2 - t1:.3f}'
-        print(json.dumps(results))
+        print(results["socketID"],results["output"], results["time"])
         io.emit('ResultsColab',json.dumps(results))
 
 
