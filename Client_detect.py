@@ -16,10 +16,11 @@ from utils.augmentations import letterbox
 from models.experimental import attempt_load
 from utils.general import  non_max_suppression,  set_logging
 from utils.torch_utils import select_device, time_sync
-from utils.plots import Annotator, colors
 
 @torch.no_grad()
-def run(weights='yolov5s.pt',  # model.pt path(s)
+def run(
+        weights='yolov5s.pt',  # model.pt path(s)
+        # weights='fire_model.pt',  # model.pt path(s)
         max_det=1000,  # maximum detections per image
         device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         half=False,  # use FP16 half-precision inference
@@ -65,7 +66,6 @@ def run(weights='yolov5s.pt',  # model.pt path(s)
             img = img[None]  # expand for batch dim
         
         t1 = time_sync()
-        
         pred = model(img, augment=False, visualize=False)[0]
         pred = non_max_suppression(pred, max_det=max_det)
         t2 = time_sync()
