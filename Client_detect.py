@@ -7,7 +7,6 @@ from pathlib import Path
 import cv2
 import numpy as np
 import torch
-import torch.backends.cudnn as cudnn
 
 FILE = Path(__file__).resolve()
 sys.path.append(FILE.parents[0].as_posix())  # add yolov5/ to path
@@ -16,6 +15,8 @@ from utils.augmentations import letterbox
 from models.experimental import attempt_load
 from utils.general import  non_max_suppression,  set_logging
 from utils.torch_utils import select_device, time_sync
+
+io = socketio.Client()
 
 @torch.no_grad()
 def run(
@@ -34,9 +35,6 @@ def run(
     # Load model
     model = attempt_load(weights, map_location=device)  # load FP32 model
     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
-
-    io = socketio.Client()
-    io.connect('http://nguyentuanvuong.tk:8000')
 
     @io.on('StreamColab')
     def on_message(msg):
@@ -106,8 +104,13 @@ def run(
 
     @io.event()
     def connect_error(data):
-        print("The connection failed!")
+        print("Reconnect!")
         # sys.exit()
 
 if __name__ == "__main__":
-    run()
+    try:
+        io.connect("http://nguyentuanvuong.tk:8000")
+        run()
+    except Exception as e:
+        print("The connection failed!")
+    
