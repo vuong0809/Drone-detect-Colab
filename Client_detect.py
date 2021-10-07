@@ -53,6 +53,7 @@ def run(
         image = np.asarray(bytearray(imgText), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
+        # img = image
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
@@ -63,6 +64,7 @@ def run(
         if len(img.shape) == 3:
             img = img[None]  # expand for batch dim
         
+        # Run detect
         t1 = time_sync()
         pred = model(img, augment=False, visualize=False)[0]
         pred = non_max_suppression(pred, max_det=max_det)
