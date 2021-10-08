@@ -1,2 +1,4 @@
 venv
 .vscode
+tfjs-yolov5-example
+yolov5s_saved_model
