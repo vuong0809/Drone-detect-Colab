@@ -14,6 +14,15 @@ Inference:
                                          yolov5s.tflite
 
 TensorFlow.js:
+
+tensorflowjs_wizard
+
+\weights\web_model
+yolov5s_saved_model\keras_metadata.pb
+yolov5s_saved_model\saved_model.pb
+tfjs-yolov5-example\public\web_model
+
+
     $ # Edit yolov5s_web_model/model.json to sort Identity* in ascending order
     $ cd .. && git clone https://github.com/zldrobit/tfjs-yolov5-example.git && cd tfjs-yolov5-example
     $ npm install
@@ -313,7 +322,7 @@ def parse_opt():
     parser.add_argument('--simplify', action='store_true', help='ONNX: simplify model')
     parser.add_argument('--opset', type=int, default=13, help='ONNX: opset version')
     parser.add_argument('--include', nargs='+',
-                        default=['torchscript', 'onnx'],
+                        default=['saved_model', 'onnx'],
                         help='available formats are (torchscript, onnx, coreml, saved_model, pb, tflite, tfjs)')
     opt = parser.parse_args()
     return opt
