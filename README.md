@@ -69,8 +69,8 @@ See the [YOLOv5 Docs](https://docs.ultralytics.com) for full documentation on tr
 <!-- $ sudo apt update && apt install -y libgl1-mesa-glx libsm6 libxext6 libxrender-dev -->
 
 ```bash
-$ git clone https://github.com/ultralytics/yolov5
-$ cd yolov5
+$ git clone https://github.com/nguyentuanvuong/Drone-detect-Colab
+$ cd Drone-detect-Colab
 $ pip install -r requirements.txt
 ```
 

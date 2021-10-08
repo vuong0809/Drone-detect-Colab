@@ -1,12 +1,3 @@
-# import torch
-# import torchvision
-# # dummy_input = torch.randn(10, 3, 224, 224, device='cpu')
-# model = torch.load('yolov5s.pt')
-# # print(model)
-# torch.onnx.export(model,  "alexnet.onnx")
-
-
-# Some standard imports
 import io
 import numpy as np
 
@@ -51,7 +42,8 @@ torch_model = SuperResolutionNet(upscale_factor=3)
 
 
 # Load pretrained model weights
-model_url = 'fire_model.pt'
+# model_url = 'fire_model.pt'
+model_url =  'mnist.pth'
 # model_url = 'superres_epoch100-44c6958e.pth'
 batch_size = 1    # just a random number
 
@@ -59,7 +51,7 @@ batch_size = 1    # just a random number
 map_location = lambda storage, loc: storage
 if torch.cuda.is_available():
     map_location = None
-torch_model.load_state_dict(model_zoo.load_url(model_url, map_location=map_location))
+torch_model.load_state_dict(torch.load(model_url, map_location=map_location))
 
 # set the model to inference mode
 torch_model.eval()
