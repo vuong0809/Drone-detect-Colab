@@ -32,6 +32,8 @@ def run(
     device = select_device(device)
     half &= device.type != 'cpu'  # half precision only supported on CUDA
 
+    print(device)
+
     # Load model
     model = attempt_load(weights, map_location=device)  # load FP32 model
     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
@@ -53,7 +55,6 @@ def run(
         image = np.asarray(bytearray(imgText), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-        # img = image
         img = letterbox(image, 640, 32, auto=True)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
@@ -111,7 +112,7 @@ def run(
 
 if __name__ == "__main__":
     try:
-        io.connect("http://nguyentuanvuong.tk:8000")
+        io.connect("http://localhost:8000")
         run()
     except Exception as e:
         print("The connection failed!")
