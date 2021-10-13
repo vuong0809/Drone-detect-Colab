@@ -1,5 +1,6 @@
 venv
 .vscode
+run
 tfjs-yolov5-example
 yolov5s_saved_model
 web_model
