@@ -103,7 +103,7 @@ def run(
 
 if __name__ == "__main__":
     try:
-        io.connect("http://localhost:8000")
+        io.connect("http:///nguyentuanvuong.tk:8000")
         run()
     except Exception as e:
         print("The connection failed!")
