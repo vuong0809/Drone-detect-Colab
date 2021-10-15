@@ -21,7 +21,7 @@ io = socketio.Client()
 @torch.no_grad()
 def run(
         weights='yolov5s.pt',  # model.pt path(s)
-        # weights='fire_model.pt',  # model.pt path(s)
+        # weights='yolov5s.tflite',  # model.pt path(s)
         max_det=1000,  # maximum detections per image
         device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         half=False,  # use FP16 half-precision inference
@@ -31,8 +31,6 @@ def run(
     set_logging()
     device = select_device(device)
     half &= device.type != 'cpu'  # half precision only supported on CUDA
-
-    print(device)
 
     # Load model
     model = attempt_load(weights, map_location=device)  # load FP32 model
@@ -47,7 +45,6 @@ def run(
             "time":0
           }
 
-        # results['img'] = msg['img']
         results["socketID"] = msg['socketID']
 
         imgText = msg['img'].encode('utf-8')
@@ -82,18 +79,12 @@ def run(
         for *xyxy, conf, cls in reversed(det):
             c = int(cls)  # integer class
             label = f'{names[c]} {conf:.3f}'
-
-            # x0 = float(torch.tensor(xyxy)[0].numpy())
-            # y0 = float(torch.tensor(xyxy)[1].numpy())
-            # x1 = float(torch.tensor(xyxy)[2].numpy())
-            # y1 = float(torch.tensor(xyxy)[3].numpy())
             
             x0 = int(xyxy[0])
             y0 = int(xyxy[1])
             x1 = int(xyxy[2])
             y1 = int(xyxy[3])
 
-            # results["results"].append({"x0":f'{x0:.3f}',"y0":f'{y0:.3f}',"x1":f'{x1:.3f}',"y1":f'{y1:.3f}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
             results["results"].append({"x0":f'{x0}',"y0":f'{y0}',"x1":f'{x1}',"y1":f'{y1}',"name":names[c],"conf":f'{conf:.3f}',"label":label})
             
         results["output"] = f'{s}'
